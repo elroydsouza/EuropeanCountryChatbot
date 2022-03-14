@@ -1,0 +1,7 @@
+IF (Speaking IS low) AND (Writing IS low) THEN (Fluency IS low)
+IF (Speaking IS low) AND (Writing IS average) THEN (Fluency IS low)
+IF (Speaking IS low) AND (Writing IS high) THEN (Fluency IS average)
+IF (Speaking IS average) AND (Writing IS low) THEN (Fluency IS low)
+IF (Speaking IS average) AND (Writing IS average) THEN (Fluency IS average)
+IF (Speaking IS average) AND (Writing IS high) THEN (Fluency IS high)
+IF (Speaking IS high) THEN (Fluency IS high)

@@ -1,0 +1,383 @@
+<aiml version="1.0.1" encoding="UTF-8">
+
+<!-- Greetings and Politeness -->
+<category> 
+	<pattern> HELLO </pattern>
+  	<template>
+		<random>
+			<li> Hello! </li>
+			<li> Hello! Would you like to know anything about European countries? </li>
+			<li> Hey! How are you doing? </li>
+		</random>
+	</template> 
+</category>
+<category>
+	<pattern> HELLO * </pattern>
+  	<template><srai>HELLO</srai></template>
+</category>
+
+<category> 
+	<pattern> HI </pattern>
+  	<template><srai>HELLO</srai></template> 
+</category>
+<category> 
+	<pattern> HI * </pattern>
+  	<template><srai>HELLO</srai></template> 
+</category>
+
+<category> 
+	<pattern> HEY </pattern>
+  	<template><srai>HELLO</srai></template> 
+</category>
+<category> 
+	<pattern> HEY * </pattern>
+  	<template><srai>HELLO</srai></template> 
+</category>
+
+<category> 
+	<pattern> YO </pattern>
+  	<template><srai>HELLO</srai></template> 
+</category>
+<category> 
+	<pattern> YO * </pattern>
+  	<template><srai>HELLO</srai></template> 
+</category>
+
+<category> 
+	<pattern> HOWDY </pattern>
+  	<template><srai>HELLO</srai></template> 
+</category>
+<category> 
+	<pattern> HOWDY * </pattern>
+  	<template><srai>HELLO</srai></template> 
+</category>
+
+<category>
+	<pattern> HOW ARE YOU </pattern>
+  	<template>Yeah I am doing well, thanks for asking!</template>
+</category>
+
+<category>
+	<pattern> I AM FINE </pattern>
+  	<template>That's great! Would you like to know anything about European Countries?</template>
+</category>
+
+<category>
+	<pattern> IM FINE </pattern>
+	<template><srai> I AM FINE </srai></template>
+</category>
+
+<category>
+	<pattern> I AM GOOD </pattern>
+	<template><srai> I AM FINE </srai></template>
+</category>
+
+<category>
+	<pattern> IM GOOD </pattern>
+	<template><srai> I AM FINE </srai></template>
+</category>
+
+<category>
+	<pattern> I AM GREAT </pattern>
+	<template><srai> I AM FINE </srai></template>
+</category>
+
+<category>
+	<pattern> IM GREAT </pattern>
+	<template><srai> I AM FINE </srai></template>
+</category>
+
+<category>
+	<pattern>_ DOING * </pattern>
+	<template><srai><star/> <star index="2"/></srai></template>
+</category>
+
+<category>
+	<pattern>_ VERY * </pattern>
+	<template><srai><star/> <star index="2"/></srai></template>
+</category>
+
+<category>
+	<pattern> * THANKS </pattern>
+	<template><srai><star/> </srai></template>
+</category>
+
+<category>
+	<pattern> COULD BE BETTER </pattern>
+	<template>Sorry to hear that! :(</template>
+</category>
+
+<category>
+	<pattern> I AM SAD </pattern>
+	<template><srai> COULD BE BETTER </srai></template>
+</category>
+
+<category>
+	<pattern> IM SAD </pattern>
+	<template><srai> COULD BE BETTER </srai></template>
+</category>
+
+<category>
+	<pattern> I AM FEELING SAD </pattern>
+	<template><srai> COULD BE BETTER </srai></template>
+</category>
+
+<category>
+	<pattern> IM FEELING SAD </pattern>
+	<template><srai> COULD BE BETTER </srai></template>
+</category>
+
+<category>
+	<pattern> BYE </pattern>
+  	<template>#0$Cya! Nice talking to you, come back if you have any remaining questions!</template>
+</category>
+
+<category>
+	<pattern> GOODBYE </pattern>
+ 	<template><srai>BYE</srai></template>
+</category>
+
+<category>
+	<pattern> EXIT </pattern>
+ 	<template><srai>BYE</srai></template>
+</category>
+
+<category>
+	<pattern> THANKS </pattern>
+  	<template>You're welcome!</template>
+</category>
+
+<category>
+	<pattern> THANKS * </pattern>
+  	<template>You're welcome!</template>
+</category>
+
+<category> 
+	<pattern> THANK YOU </pattern>
+  	<template><srai>THANKS</srai></template>
+</category>
+
+<category> 
+	<pattern> THANK YOU * </pattern>
+  	<template><srai>THANKS</srai></template>
+</category>
+
+<category> 
+	<pattern> CHEERS </pattern>
+ 	<template><srai>THANKS</srai></template>
+</category>
+
+<category> 
+	<pattern> CHEERS * </pattern>
+ 	<template><srai>THANKS</srai></template>
+</category>
+
+<category> 
+	<pattern> WOW </pattern>
+ 	<template>Wow!</template>
+</category>
+
+<category> 
+	<pattern> NICE </pattern>
+ 	<template>Nice indeed!</template>
+</category>
+
+<category> 
+	<pattern> CORRECT </pattern>
+ 	<template>Nice, I love being right!</template>
+</category>
+
+<category> 
+	<pattern> TIP </pattern>
+  	<template>
+		<random>
+			<li> Try ask the chatbot what the currency of a country within Europe is! </li>
+			<li> Try ask the chatbot to show the flag of a country within Europe! </li>
+			<li> Try ask the chatbot to display bordering countries of a country within Europe! </li>
+			<li> Try ask the chatbot what the country code is of a country within Europe! </li>
+			<li> Try ask the chatbot what the capital city of a country within Europe is! </li>
+			<li> Try ask the chatbot what subregion a country is within Europe! </li>
+			<li> Try ask the chatbot what country it's from! </li>
+			<li> Try ask the chatbot to check your language fluency, with the command: fluency checker! </li>
+		</random>
+	</template> 
+</category>
+
+<!-- QUESTIONS w/o API or CSV -->
+<category>
+	<pattern> WHAT COUNTRY ARE YOU FROM </pattern>
+  	<template>I was developed in the United Kingdom, where are you from?</template>
+</category>
+<category>
+	<pattern> WHAT IS YOUR NAME </pattern>
+  	<template>My name is European Chatbot. Nice to meet you!</template>
+</category>
+<category>
+	<pattern> I AM FROM * </pattern>
+  	<template><formal><set name="country"><star/></set></formal>! That's a great place!</template>
+</category>
+<category>
+	<pattern> DO YOU REMEMBER WHAT COUNTRY I AM FROM </pattern>
+  	<template> You are from <formal><get name="country"/></formal>! </template>
+</category>
+<category> 
+	<pattern> WHERE AM I FROM </pattern>
+ 	<template><srai> DO YOU REMEMBER WHAT COUNTRY I AM FROM </srai></template>
+</category>
+<category> 
+	<pattern> WHAT COUNTRY AM I FROM </pattern>
+ 	<template><srai> DO YOU REMEMBER WHAT COUNTRY I AM FROM </srai></template>
+</category>
+
+<!-- QUESTIONS w/ API -->
+
+<!-- Currency -->
+<category>
+	<pattern> WHAT IS THE CURRENCY IN * </pattern>
+  	<template>#2$<star/></template>
+</category>
+<category>
+	<pattern> WHAT IS THE CURRENCY OF * </pattern>
+  	<template>#2$<star/></template>
+</category>
+<category>
+	<pattern> WHAT IS THE MAIN CURRENCY IN * </pattern>
+  	<template>#2$<star/></template>
+</category>
+<category>
+	<pattern> WHAT IS THE MAIN CURRENCY OF * </pattern>
+  	<template>#2$<star/></template>
+</category>
+<category>
+	<pattern> WHAT CURRENCY IS USED IN * </pattern>
+  	<template>#2$<star/></template>
+</category>
+
+<!-- Border -->
+<category>
+	<pattern> WHAT COUNTRIES BORDER * </pattern>
+  	<template>#3$<star/></template>
+</category>
+<category>
+	<pattern> WHAT COUNTRIES SURROUND * </pattern>
+  	<template>#3$<star/></template>
+</category>
+
+<!-- Country Code -->
+<category>
+	<pattern> WHAT IS THE COUNTRY CODE FOR * </pattern>
+  	<template>#4$<star/></template>
+</category>
+
+<!-- Capital -->
+<category>
+	<pattern> WHAT IS THE CAPITAL OF * </pattern>
+  	<template>#5$<star/></template>
+</category>
+<category>
+	<pattern> WHAT IS THE CAPITAL CITY OF * </pattern>
+  	<template>#5$<star/></template>
+</category>
+
+<!-- Subregion -->
+<category>
+	<pattern> WHAT SUBREGION IS * IN </pattern>
+  	<template>#6$<star/></template>
+</category>
+<category>
+	<pattern> WHICH PART OF EUROPE IS * IN </pattern>
+  	<template>#6$<star/></template>
+</category>
+
+<!-- Flag -->
+<category>
+	<pattern> SHOW ME THE FLAG OF * </pattern>
+  	<template>#7$<star/></template>
+</category>
+<category>
+	<pattern> WHAT DOES THE FLAG OF * LOOK LIKE </pattern>
+	<template>#7$<star/></template>
+</category>
+
+<!-- Default reaction -->
+<category>
+	<pattern> * </pattern>
+  	<template>#99$<star index="1"/></template>
+</category>
+
+<!-- Knowledgebase statements -->
+<category>
+	<pattern> I KNOW THAT * IS * </pattern>
+	<template>#50$<star index = "1"/> is <star index="2"/></template>
+</category>
+<category>
+	<pattern> I KNOW THAT THE * IS * </pattern>
+	<template>#50$<star index = "1"/> is <star index="2"/></template>
+</category>
+<category>
+	<pattern> I KNOW THAT * IS A * </pattern>
+	<template>#50$<star index = "1"/> is <star index="2"/></template>
+</category>
+<category>
+	<pattern> I KNOW THAT THE * IS A * </pattern>
+	<template>#50$<star index = "1"/> is <star index="2"/></template>
+</category>
+
+<category>
+	<pattern> CHECK THAT * IS * </pattern>
+	<template>#51$<star index = "1"/> is <star index="2"/></template>
+</category>
+<category>
+	<pattern> CHECK THAT THE * IS * </pattern>
+	<template>#51$<star index = "1"/> is <star index="2"/></template>
+</category>
+<category>
+	<pattern> CHECK THAT * IS A * </pattern>
+	<template>#51$<star index = "1"/> is <star index="2"/></template>
+</category>
+<category>
+	<pattern> CHECK THAT THE * IS A * </pattern>
+	<template>#51$<star index = "1"/> is <star index="2"/></template>
+</category>
+
+<!-- Fuzzy inference statements -->
+<category>
+	<pattern> FLUENCY LANGUAGE CHECKER </pattern>
+	<template>#52$<star/></template>
+</category>
+<category>
+	<pattern> FLUENCY CHECKER </pattern>
+	<template><srai> FLUENCY LANGUAGE CHECKER </srai></template>
+</category>
+<category>
+	<pattern> CHECK LANGUAGE FLUENCY </pattern>
+	<template><srai> FLUENCY LANGUAGE CHECKER </srai></template>
+</category>
+<category>
+	<pattern> CHECK MY LANGUAGE FLUENCY </pattern>
+	<template><srai> FLUENCY LANGUAGE CHECKER </srai></template>
+</category>
+<category>
+	<pattern> CHECK FLUENCY </pattern>
+	<template><srai> FLUENCY LANGUAGE CHECKER </srai></template>
+</category>
+<category>
+	<pattern>_ CHECK FLUENCY </pattern>
+	<template><srai> FLUENCY LANGUAGE CHECKER </srai></template>
+</category>
+<category>
+	<pattern>_ CHECK MY FLUENCY </pattern>
+	<template><srai> FLUENCY LANGUAGE CHECKER </srai></template>
+</category>
+
+<!-- CNN World Wonders -->
+<category>
+	<pattern> WHAT IS THIS WORLD WONDER </pattern>
+	<template>#53$<star/></template>
+</category>
+<category>
+	<pattern> WORLD WONDER </pattern>
+	<template><srai> WHAT IS THIS WORLD WONDER </srai></template>
+</category>
+
+</aiml>

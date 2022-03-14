@@ -1,0 +1,25 @@
+"Capital (x) -> -Country(x)"
+"Capital (x) -> -Region(x)"
+"Country (x) -> -Capital(x)"
+"Country (x) -> -Region(x)"
+"ConstituentCountry (x) -> Country (x)"
+
+"Region (NorthEurope)"
+"Region (EastEurope)"
+"Region (SouthEurope)"
+"Region (WestEurope)"
+
+"Country (UnitedKingdom)"
+"Capital (London)"
+
+"Country (France)"
+"Capital (Paris)"
+
+"Country (Italy)"
+"Capital (Rome)"
+
+"Country (Estonia)"
+"Capital (Tallinn)"
+
+"ConstituentCountry (Wales)"
+"ConstituentCountry (England)"
