@@ -330,7 +330,7 @@ while True:
                 description = cv_client.describe_image_in_stream(imgStream)
 
                 for caption in description.captions:
-                    print("Azure Cognitive Web Service.") 
+                    print("Azure Cognitive Web Services provides this answer...") 
                     print("This image is most likely {}. This is said with {:.2f} percent confidence.".format(caption.text, caption.confidence*100))
 
             elif decision.lower() == "identify":
@@ -361,6 +361,9 @@ while True:
                 # else:
                 #     prediction = "Unknown"
                 # print("This image is most likely the world wonder: " + prediction)
+            
+            else:
+                print("Please only input the words 'analyse' or 'identify'.")
 
         elif cmd == 99:
             # Similarity conversation using BoW, tf-idf, and cosine similarity
