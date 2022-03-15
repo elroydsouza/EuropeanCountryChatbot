@@ -38,8 +38,12 @@ import numpy as np
 import tkinter as tk
 from tkinter import filedialog
 
-# azure
+# azure computer vision
 from azure.cognitiveservices.vision.computervision import ComputerVisionClient
+from msrest.authentication import CognitiveServicesCredentials
+
+# azure face analysis
+from azure.cognitiveservices.vision.face import FaceClient
 from msrest.authentication import CognitiveServicesCredentials
 
 print("Initialising chatbot...")
@@ -104,6 +108,64 @@ def kbFormatting(object, subject):
     subject = subject.replace(" ", "")
     return object, subject
 
+trainFacesCount = 0
+
+def trainFaces(face_client, groupID):
+    global trainFacesCount
+    if(trainFacesCount == 0):
+        print("Training European Leader Images...")
+        try:
+            # Delete group if it exists within Azure
+            face_client.person_group.delete(groupID)
+        except Exception as ex:
+            print(ex.message)
+        finally:
+            face_client.person_group.create(groupID, 'Leaders')
+
+        # Add person to group
+        franceLeader = face_client.person_group_person.create(groupID, 'Emmanual Macron, the President of France.')
+        # Retrieve training photos of person
+        franceLeaderPhotos = os.path.join('face_recognition', 'train_faces', 'FranceLeader')
+        franceLeaderDir = os.listdir(franceLeaderPhotos)
+        # Register person
+        registerPhotos(franceLeaderPhotos, franceLeaderDir, face_client, groupID, franceLeader)
+
+        # Add person to group
+        greeceLeader = face_client.person_group_person.create(groupID, 'Katerina Sakellaropoulou, the President of Greece.')
+        # Retrieve training photos of person
+        greeceLeaderPhotos = os.path.join('face_recognition', 'train_faces', 'GreeceLeader')
+        greeceLeaderDir = os.listdir(greeceLeaderPhotos)
+        # Register person
+        registerPhotos(greeceLeaderPhotos, greeceLeaderDir, face_client, groupID, greeceLeader)
+
+        # Add person to group
+        italyLeader = face_client.person_group_person.create(groupID, 'Sergio Mattarella, the President of Italy.')
+        # Retrieve training photos of person
+        italyLeaderPhotos = os.path.join('face_recognition', 'train_faces', 'ItalyLeader')
+        italyLeaderDir = os.listdir(italyLeaderPhotos)
+        # Register person
+        registerPhotos(italyLeaderPhotos, italyLeaderDir, face_client, groupID, italyLeader)
+
+        # Add person to group
+        UKLeader = face_client.person_group_person.create(groupID, 'Boris Johnson, the Prime Minister of the United Kingdom.')
+        # Retrieve training photos of person
+        UKLeaderPhotos = os.path.join('face_recognition', 'train_faces', 'UKLeader')
+        UKLeaderDir = os.listdir(UKLeaderPhotos)
+        # Register person
+        registerPhotos(UKLeaderPhotos, UKLeaderDir, face_client, groupID, UKLeader)
+
+        face_client.person_group.train(groupID)
+        print('European Leader Images Trained!')
+
+        trainFacesCount = trainFacesCount + 1
+
+def registerPhotos(trainPhotos, leaderDir, face_client, groupID, person):
+    for pic in leaderDir:
+            # Insert each photo to person in person group
+            img_path = os.path.join(trainPhotos, pic)
+            img_stream = open(img_path, "rb")
+            face_client.person_group_person.add_face_from_stream(groupID, person.person_id, img_stream)
+
 # Main loop of chatbot
 while True:
     try:
@@ -166,11 +228,9 @@ while True:
                                 if response_json:
                                     name = response_json[0]['name']['common']
                                     borFN.append(name)
-                            
                             i = i+1
 
                         seperator = ", "
-                        
                         print("The countries that border", params[1].title(), "are:", seperator.join(borFN))
             else:
                 continue
@@ -307,63 +367,87 @@ while True:
                 print('You are advanced level at ' + language + '. However, you are not fluent.')
             else:
                 print('You are fluent in ' + language)
-        elif cmd == 53: # CNN model used to identify what world wonder chosen image is
+        elif cmd == 53: # Identification of what European Wonder the chosen image is
             # Select an image from file explorer
-            try:
-                root = tk.Tk()
-                root.filename = filedialog.askopenfilename(initialdir="test_data/", title="Select An Image", filetypes=(("JPG files", "*.jpg"),("All Files", "*.*")))
-            except (KeyboardInterrupt, EOFError) as e:
-                print("No image selected.")
-                continue
+            root = tk.Tk()
+            root.filename = filedialog.askopenfilename(initialdir="test_data/", title="Select An Image Of A European Wonder", filetypes=(("JPG files", "*.jpg"),("All Files", "*.*")))
             root.destroy()
             imgPath = root.filename
 
-            # Prompt user with question over which option they would like to do
-            decision = input("Would you like to analyse or identify this image?\n> ")
+            if(imgPath != ""):
+                # Prompt user with question over which option they would like to do
+                decision = input("Would you like to analyse or identify this image?\n> ")
 
-            if decision.lower() == "analyse":
-                # Client from computer vision service
-                cv_client = ComputerVisionClient(cv_endpoint, CognitiveServicesCredentials(cv_key))
+                if decision.lower() == "analyse":
+                    # Client for computer vision service
+                    cv_client = ComputerVisionClient(cv_endpoint, CognitiveServicesCredentials(cv_key))
 
-                # Description from computer vision service
-                imgStream = open(imgPath, "rb")
-                description = cv_client.describe_image_in_stream(imgStream)
+                    # Description from computer vision service
+                    imgStream = open(imgPath, "rb")
 
-                for caption in description.captions:
-                    print("Azure Cognitive Web Services provides this answer...") 
-                    print("This image is most likely {}. This is said with {:.2f} percent confidence.".format(caption.text, caption.confidence*100))
+                    description = cv_client.describe_image_in_stream(imgStream)
 
-            elif decision.lower() == "identify":
-                # Load WorldWodnerModel.h5 model
-                model= tensor.keras.models.load_model("WorldWonderModel.h5")
+                    for caption in description.captions:
+                        print("Azure Cognitive Web Services provides this answer...") 
+                        print("This image is most likely {}. This is said with {:.2f} percent confidence.".format(caption.text, caption.confidence*100))
 
-                # Load selected image into correct format for model
-                img = tensor.keras.utils.load_img(imgPath, target_size = (180,180))
-                imgArray = tensor.keras.utils.img_to_array(img)
-                imgArray = tensor.expand_dims(imgArray, axis = 0)
+                elif decision.lower() == "identify":
+                    # Load EuropeanWodnerModel.h5 model
+                    model= tensor.keras.models.load_model("EuropeanWonderModel.h5")
 
-                # Use model to predict score
-                output = model.predict(imgArray)
-                score = tensor.nn.softmax(output[0])
+                    # Load selected image into correct format for model
+                    img = tensor.keras.utils.load_img(imgPath, target_size = (180,180))
+                    imgArray = tensor.keras.utils.img_to_array(img)
+                    imgArray = tensor.expand_dims(imgArray, axis = 0)
 
-                # Output predicted class with confidence percentage
-                class_names = ['The Christ The Redeemer Statue', 'The Eiffel Tower', 'The Pyramids of Giza', 'Stonehenge']
-                print("This image is most likely {}. This is said with {:.2f} percent confidence.".format(class_names[np.argmax(score)], 100 * np.max(score)))
+                    # Use model to predict score
+                    output = model.predict(imgArray)
+                    score = tensor.nn.softmax(output[0])
 
-                # if output[0][0] == 1:
-                #     prediction = "Christ the Redeemer"
-                # elif output[0][1] == 1:
-                #     prediction = "The Eiffel Tower"
-                # elif output[0][2] == 1:
-                #     prediction = "Pyramid of Giza"
-                # elif output[0][3] == 1:
-                #     prediction = "Stonehenge"
-                # else:
-                #     prediction = "Unknown"
-                # print("This image is most likely the world wonder: " + prediction)
-            
+                    # Output predicted class with confidence percentage
+                    class_names = ['The Eiffel Tower', 'Santorini', 'Stonehenge', 'The Blue Grotto']
+                    print("This image is most likely {}. This is said with {:.2f} percent confidence.".format(class_names[np.argmax(score)], 100 * np.max(score)))
+                
+                else:
+                    print("Please only input the words 'analyse' or 'identify'.")
             else:
-                print("Please only input the words 'analyse' or 'identify'.")
+                print("No image selected.")
+
+        elif cmd == 54:
+            # Client for face detection
+            face_client = FaceClient(cv_endpoint, CognitiveServicesCredentials(cv_key))
+            groupID = 'leaders_group_id'
+            trainFaces(face_client, groupID)
+
+            # Select an image from file explorer
+            root = tk.Tk()
+            root.filename = filedialog.askopenfilename(initialdir="face_recognition/test_faces/", title="Select An Image Of A European Leader", filetypes=(("JPG files", "*.jpg"),("All Files", "*.*")))
+            root.destroy()
+            imgPath = root.filename
+
+            if(imgPath != ""):
+                # Get the face IDs in a second image
+                image_stream = open(imgPath, "rb")
+                image_faces = face_client.face.detect_with_stream(image=image_stream)
+                image_face_ids = list(map(lambda face: face.face_id, image_faces))
+
+                # Get recognized face names
+                face_names = {}
+                recognized_faces = face_client.face.identify(image_face_ids, groupID)
+                for face in recognized_faces:
+                    try:
+                        person_name = face_client.person_group_person.get(groupID, face.candidates[0].person_id).name
+                        face_names[face.face_id] = person_name
+                    except IndexError:
+                        continue
+
+                if image_faces:
+                    print("The European Leader/s that have been spotted in this photo are:")
+                    for face in image_faces:
+                        if face.face_id in face_names:
+                            print("-",face_names[face.face_id])
+            else:
+                print("No image selected.")
 
         elif cmd == 99:
             # Similarity conversation using BoW, tf-idf, and cosine similarity

@@ -370,14 +370,36 @@
 	<template><srai> FLUENCY LANGUAGE CHECKER </srai></template>
 </category>
 
-<!-- CNN World Wonders -->
+<!-- CNN and Azure European Wonders Detection -->
 <category>
-	<pattern> WHAT IS THIS WORLD WONDER </pattern>
+	<pattern> WHAT IS THIS EUROPEAN WONDER </pattern>
 	<template>#53$<star/></template>
 </category>
 <category>
+	<pattern> EUROPEAN WONDER </pattern>
+	<template><srai> WHAT IS THIS EUROPEAN WONDER </srai></template>
+</category>
+<category>
+	<pattern> WHAT IS THIS WORLD WONDER </pattern>
+	<template><srai> WHAT IS THIS EUROPEAN WONDER </srai></template>
+</category>
+<category>
 	<pattern> WORLD WONDER </pattern>
-	<template><srai> WHAT IS THIS WORLD WONDER </srai></template>
+	<template><srai> WHAT IS THIS EUROPEAN WONDER </srai></template>
+</category>
+
+<!-- Azure Facial Recognition -->
+<category>
+	<pattern> WHO IS THIS LEADER </pattern>
+	<template>#54$<star/></template>
+</category>
+<category>
+	<pattern> WHO IS THIS WORLD LEADER </pattern>
+	<template><srai> WHO IS THIS LEADER </srai></template>
+</category>
+<category>
+	<pattern> WHO IS THIS EUROPEAN LEADER </pattern>
+	<template><srai> WHO IS THIS LEADER </srai></template>
 </category>
 
 </aiml>
