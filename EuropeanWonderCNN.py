@@ -4,9 +4,9 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # get rid of tensorflow errors
 import tensorflow as tf
 
 from tensorflow import keras
-from tensorflow.keras import layers
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.callbacks import EarlyStopping
+from keras import layers
+from keras.models import Sequential
+from keras.callbacks import EarlyStopping
 
 batch_size = 32
 IMG_HEIGHT = 180
