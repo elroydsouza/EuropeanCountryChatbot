@@ -465,25 +465,31 @@ while True:
 
             if(imgPath != ""):
                 # Get the face IDs in a second image
-                image_stream = open(imgPath, "rb")
-                image_faces = face_client.face.detect_with_stream(image=image_stream)
-                image_face_ids = list(map(lambda face: face.face_id, image_faces))
+                imgStream = open(imgPath, "rb")
+                imgFaces = face_client.face.detect_with_stream(image=imgStream)
+                imgFaceIDs = list(map(lambda face: face.face_id, imgFaces))
 
                 # Get recognized face names
-                face_names = {}
-                recognized_faces = face_client.face.identify(image_face_ids, groupID)
-                for face in recognized_faces:
-                    try:
-                        person_name = face_client.person_group_person.get(groupID, face.candidates[0].person_id).name
-                        face_names[face.face_id] = person_name
-                    except IndexError:
-                        continue
+                faceNames = {}
+                try:
+                    recognised = face_client.face.identify(imgFaceIDs, groupID)
+                    for face in recognised:
+                        try:
+                            recognisedName = face_client.person_group_person.get(groupID, face.candidates[0].person_id).name
+                            faceNames[face.face_id] = recognisedName
+                        except IndexError:
+                            continue
+                except:
+                    print("Azure could not detect any human faces in this image.")
+                    continue
 
-                if image_faces:
+                if faceNames:
                     print("The European Leader/s that have been spotted in this photo are:")
-                    for face in image_faces:
-                        if face.face_id in face_names:
-                            print("-",face_names[face.face_id])
+                    for face in imgFaces:
+                        if face.face_id in faceNames:
+                            print("-",faceNames[face.face_id])
+                else:
+                    print("None of the currently trained European Leader faces are detected in this image.\nCurrently trained leaders: UK, France, Greece, Italy")
             else:
                 print("No image selected.")
 
