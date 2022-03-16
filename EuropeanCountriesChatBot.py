@@ -46,6 +46,10 @@ from msrest.authentication import CognitiveServicesCredentials
 from azure.cognitiveservices.vision.face import FaceClient
 from msrest.authentication import CognitiveServicesCredentials
 
+# azure custom vision
+from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient
+from msrest.authentication import ApiKeyCredentials
+
 print("Initialising chatbot...")
 
 # Initialise knowledgebase (KB)
@@ -81,9 +85,15 @@ print("\nStart by asking a question, or with a simple greeting! If stuck, try ty
 cAPI_url = "https://restcountries.com/v3.1/name/"
 aAPI_url = "https://restcountries.com/v3.1/alpha/"
 
-# Define key and endpoint for cognitive services
-cv_key = '33298418ecd44083b03fcfa983984744'
-cv_endpoint = 'https://taskdcognitiveservice.cognitiveservices.azure.com/'
+# Define key and endpoint for image analysis
+ia_key = '33298418ecd44083b03fcfa983984744'
+ia_endpoint = 'https://taskdcognitiveservice.cognitiveservices.azure.com/'
+
+# Define key and endpoint for custom vision
+proj_id = '3548bbfb-e523-432a-8794-7038300deb11'
+cv_key = 'd8acd7ebe6a24831ba162435adad47d4'
+cv_endpoint = 'https://taskdcustomvision-prediction.cognitiveservices.azure.com/'
+model_name = 'EuropeanWonders'
 
 # Continent checker to check if countries continent is Europe
 def checkEurope(country):
@@ -122,42 +132,56 @@ def trainFaces(face_client, groupID):
         finally:
             face_client.person_group.create(groupID, 'Leaders')
 
-        # Add person to group
-        franceLeader = face_client.person_group_person.create(groupID, 'Emmanual Macron, the President of France.')
-        # Retrieve training photos of person
-        franceLeaderPhotos = os.path.join('face_recognition', 'train_faces', 'FranceLeader')
-        franceLeaderDir = os.listdir(franceLeaderPhotos)
-        # Register person
-        registerPhotos(franceLeaderPhotos, franceLeaderDir, face_client, groupID, franceLeader)
+        # # Add person to group
+        # franceLeader = face_client.person_group_person.create(groupID, 'Emmanual Macron, the President of France.')
+        # # Retrieve training photos of person
+        # franceLeaderPhotos = os.path.join('face_recognition', 'train_faces', 'FranceLeader')
+        # franceLeaderDir = os.listdir(franceLeaderPhotos)
+        # # Register person
+        # registerPhotos(franceLeaderPhotos, franceLeaderDir, face_client, groupID, franceLeader)
 
-        # Add person to group
-        greeceLeader = face_client.person_group_person.create(groupID, 'Katerina Sakellaropoulou, the President of Greece.')
-        # Retrieve training photos of person
-        greeceLeaderPhotos = os.path.join('face_recognition', 'train_faces', 'GreeceLeader')
-        greeceLeaderDir = os.listdir(greeceLeaderPhotos)
-        # Register person
-        registerPhotos(greeceLeaderPhotos, greeceLeaderDir, face_client, groupID, greeceLeader)
+        # # Add person to group
+        # greeceLeader = face_client.person_group_person.create(groupID, 'Katerina Sakellaropoulou, the President of Greece.')
+        # # Retrieve training photos of person
+        # greeceLeaderPhotos = os.path.join('face_recognition', 'train_faces', 'GreeceLeader')
+        # greeceLeaderDir = os.listdir(greeceLeaderPhotos)
+        # # Register person
+        # registerPhotos(greeceLeaderPhotos, greeceLeaderDir, face_client, groupID, greeceLeader)
 
-        # Add person to group
-        italyLeader = face_client.person_group_person.create(groupID, 'Sergio Mattarella, the President of Italy.')
-        # Retrieve training photos of person
-        italyLeaderPhotos = os.path.join('face_recognition', 'train_faces', 'ItalyLeader')
-        italyLeaderDir = os.listdir(italyLeaderPhotos)
-        # Register person
-        registerPhotos(italyLeaderPhotos, italyLeaderDir, face_client, groupID, italyLeader)
+        # # Add person to group
+        # italyLeader = face_client.person_group_person.create(groupID, 'Sergio Mattarella, the President of Italy.')
+        # # Retrieve training photos of person
+        # italyLeaderPhotos = os.path.join('face_recognition', 'train_faces', 'ItalyLeader')
+        # italyLeaderDir = os.listdir(italyLeaderPhotos)
+        # # Register person
+        # registerPhotos(italyLeaderPhotos, italyLeaderDir, face_client, groupID, italyLeader)
 
-        # Add person to group
-        UKLeader = face_client.person_group_person.create(groupID, 'Boris Johnson, the Prime Minister of the United Kingdom.')
-        # Retrieve training photos of person
-        UKLeaderPhotos = os.path.join('face_recognition', 'train_faces', 'UKLeader')
-        UKLeaderDir = os.listdir(UKLeaderPhotos)
-        # Register person
-        registerPhotos(UKLeaderPhotos, UKLeaderDir, face_client, groupID, UKLeader)
+        # # Add person to group
+        # UKLeader = face_client.person_group_person.create(groupID, 'Boris Johnson, the Prime Minister of the United Kingdom.')
+        # # Retrieve training photos of person
+        # UKLeaderPhotos = os.path.join('face_recognition', 'train_faces', 'UKLeader')
+        # UKLeaderDir = os.listdir(UKLeaderPhotos)
+        # # Register person
+        # registerPhotos(UKLeaderPhotos, UKLeaderDir, face_client, groupID, UKLeader)
+
+        addPerson('FranceLeader', 'Emmanual Macron, the President of France.')
+        addPerson('GreeceLeader', 'Katerina Sakellaropoulou, the President of Greece.')
+        addPerson('ItalyLeader', 'Sergio Mattarella, the President of Italy.')
+        addPerson('UKLeader', 'Boris Johnson, the Prime Minister of the United Kingdom.')
 
         face_client.person_group.train(groupID)
         print('European Leader Images Trained!')
 
         trainFacesCount = trainFacesCount + 1
+
+def addPerson(leaderName, leaderDesc):
+    # Add person to group
+    leader = face_client.person_group_person.create(groupID, leaderDesc)
+    # Retrieve training photos of person
+    leaderPhotos = os.path.join('face_recognition', 'train_faces', leaderName)
+    leaderDir = os.listdir(leaderPhotos)
+    # Register person
+    registerPhotos(leaderPhotos, leaderDir, face_client, groupID, leader)
 
 def registerPhotos(trainPhotos, leaderDir, face_client, groupID, person):
     for pic in leaderDir:
@@ -380,18 +404,32 @@ while True:
 
                 if decision.lower() == "analyse":
                     # Client for computer vision service
-                    cv_client = ComputerVisionClient(cv_endpoint, CognitiveServicesCredentials(cv_key))
+                    compv_client = ComputerVisionClient(ia_endpoint, CognitiveServicesCredentials(ia_key))
 
                     # Description from computer vision service
                     imgStream = open(imgPath, "rb")
 
-                    description = cv_client.describe_image_in_stream(imgStream)
+                    description = compv_client.describe_image_in_stream(imgStream)
 
                     for caption in description.captions:
                         print("Azure Cognitive Web Services provides this answer...") 
                         print("This image is most likely {}. This is said with {:.2f} percent confidence.".format(caption.text, caption.confidence*100))
 
                 elif decision.lower() == "identify":
+                    # Client for custom vision
+                    cred = ApiKeyCredentials(in_headers={"Prediction-key": cv_key})
+                    custv_client = CustomVisionPredictionClient(endpoint=cv_endpoint, credentials=cred)
+
+                    # Open the image, and use the custom vision model to classify it
+                    imgStream = open(imgPath, "rb")
+                    imgClassification = custv_client.classify_image(proj_id, model_name, imgStream.read())
+                    # The results include a prediction for each tag, in descending order of probability - get the first one
+                    prediction = imgClassification.predictions[0].tag_name
+
+                    print('Azure custom vision identifies this image as', prediction + '.')
+
+
+
                     # Load EuropeanWodnerModel.h5 model
                     model= tensor.keras.models.load_model("EuropeanWonderModel.h5")
 
@@ -406,7 +444,7 @@ while True:
 
                     # Output predicted class with confidence percentage
                     class_names = ['The Eiffel Tower', 'Santorini', 'Stonehenge', 'The Blue Grotto']
-                    print("This image is most likely {}. This is said with {:.2f} percent confidence.".format(class_names[np.argmax(score)], 100 * np.max(score)))
+                    print("CNN model identifies this image is most likely {} ({:.2f} percent confidence).".format(class_names[np.argmax(score)], 100 * np.max(score)))
                 
                 else:
                     print("Please only input the words 'analyse' or 'identify'.")
@@ -415,7 +453,7 @@ while True:
 
         elif cmd == 54:
             # Client for face detection
-            face_client = FaceClient(cv_endpoint, CognitiveServicesCredentials(cv_key))
+            face_client = FaceClient(ia_endpoint, CognitiveServicesCredentials(ia_key))
             groupID = 'leaders_group_id'
             trainFaces(face_client, groupID)
 
