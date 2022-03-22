@@ -9,6 +9,10 @@ import csv
 import regex
 # Pillow 9.0.0
 from PIL import Image
+from PIL import ImageColor
+from PIL import ImageDraw
+from PIL import ImageFont
+from PIL import ImageOps
 # requests 2.27.1
 import requests
 # aiml 0.9.2
@@ -49,6 +53,10 @@ from msrest.authentication import CognitiveServicesCredentials
 # azure custom vision
 from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient
 from msrest.authentication import ApiKeyCredentials
+
+import tensorflow_hub as hub
+
+import matplotlib.pyplot as plt
 
 print("Initialising chatbot...")
 
@@ -118,9 +126,10 @@ def kbFormatting(object, subject):
     subject = subject.replace(" ", "")
     return object, subject
 
+# Train faces stored within specified folder
+# Only needed once as these trained faces are stored within Azure
 trainFacesCount = 0
-
-def trainFaces(face_client, groupID):
+def trainFaces(groupID):
     global trainFacesCount
     if(trainFacesCount == 0):
         print("Training European Leader Images...")
@@ -132,38 +141,6 @@ def trainFaces(face_client, groupID):
         finally:
             face_client.person_group.create(groupID, 'Leaders')
 
-        # # Add person to group
-        # franceLeader = face_client.person_group_person.create(groupID, 'Emmanual Macron, the President of France.')
-        # # Retrieve training photos of person
-        # franceLeaderPhotos = os.path.join('face_recognition', 'train_faces', 'FranceLeader')
-        # franceLeaderDir = os.listdir(franceLeaderPhotos)
-        # # Register person
-        # registerPhotos(franceLeaderPhotos, franceLeaderDir, face_client, groupID, franceLeader)
-
-        # # Add person to group
-        # greeceLeader = face_client.person_group_person.create(groupID, 'Katerina Sakellaropoulou, the President of Greece.')
-        # # Retrieve training photos of person
-        # greeceLeaderPhotos = os.path.join('face_recognition', 'train_faces', 'GreeceLeader')
-        # greeceLeaderDir = os.listdir(greeceLeaderPhotos)
-        # # Register person
-        # registerPhotos(greeceLeaderPhotos, greeceLeaderDir, face_client, groupID, greeceLeader)
-
-        # # Add person to group
-        # italyLeader = face_client.person_group_person.create(groupID, 'Sergio Mattarella, the President of Italy.')
-        # # Retrieve training photos of person
-        # italyLeaderPhotos = os.path.join('face_recognition', 'train_faces', 'ItalyLeader')
-        # italyLeaderDir = os.listdir(italyLeaderPhotos)
-        # # Register person
-        # registerPhotos(italyLeaderPhotos, italyLeaderDir, face_client, groupID, italyLeader)
-
-        # # Add person to group
-        # UKLeader = face_client.person_group_person.create(groupID, 'Boris Johnson, the Prime Minister of the United Kingdom.')
-        # # Retrieve training photos of person
-        # UKLeaderPhotos = os.path.join('face_recognition', 'train_faces', 'UKLeader')
-        # UKLeaderDir = os.listdir(UKLeaderPhotos)
-        # # Register person
-        # registerPhotos(UKLeaderPhotos, UKLeaderDir, face_client, groupID, UKLeader)
-
         addPerson('FranceLeader', 'Emmanual Macron, the President of France.')
         addPerson('GreeceLeader', 'Katerina Sakellaropoulou, the President of Greece.')
         addPerson('ItalyLeader', 'Sergio Mattarella, the President of Italy.')
@@ -174,21 +151,31 @@ def trainFaces(face_client, groupID):
 
         trainFacesCount = trainFacesCount + 1
 
+# Add person to group
 def addPerson(leaderName, leaderDesc):
-    # Add person to group
     leader = face_client.person_group_person.create(groupID, leaderDesc)
     # Retrieve training photos of person
     leaderPhotos = os.path.join('face_recognition', 'train_faces', leaderName)
     leaderDir = os.listdir(leaderPhotos)
     # Register person
-    registerPhotos(leaderPhotos, leaderDir, face_client, groupID, leader)
+    registerPhotos(leaderPhotos, leaderDir, groupID, leader)
 
-def registerPhotos(trainPhotos, leaderDir, face_client, groupID, person):
+# Registers photo to Azure group
+def registerPhotos(trainPhotos, leaderDir, groupID, person):
     for pic in leaderDir:
             # Insert each photo to person in person group
-            img_path = os.path.join(trainPhotos, pic)
-            img_stream = open(img_path, "rb")
-            face_client.person_group_person.add_face_from_stream(groupID, person.person_id, img_stream)
+            imgPath = os.path.join(trainPhotos, pic)
+            imgStream = open(imgPath, "rb")
+            face_client.person_group_person.add_face_from_stream(groupID, person.person_id, imgStream)
+
+detector = ""
+detectorRunCount = 0
+def detectorLoad(moduleHandle):
+    global detectorRunCount
+    if (detectorRunCount == 0):
+        global detector
+        detector = hub.load(moduleHandle).signatures['default']
+        detectorRunCount = detectorRunCount + 1
 
 # Main loop of chatbot
 while True:
@@ -200,6 +187,8 @@ while True:
     responseAgent = 'aiml'
     if responseAgent == 'aiml':
         answer = kern.respond(userInput)
+    if answer == "":
+        continue
     if answer[0] == '#':
         params = answer[1:].split('$')
 
@@ -394,7 +383,9 @@ while True:
         elif cmd == 53: # Identification of what European Wonder the chosen image is
             # Select an image from file explorer
             root = tk.Tk()
-            root.filename = filedialog.askopenfilename(initialdir="test_data/", title="Select An Image Of A European Wonder", filetypes=(("JPG files", "*.jpg"),("All Files", "*.*")))
+            root.filename = filedialog.askopenfilename(initialdir="test_data/",
+                                                        title="Select An Image Of A European Wonder",
+                                                        filetypes=(("JPG files", "*.jpg"),("All Files", "*.*")))
             root.destroy()
             imgPath = root.filename
 
@@ -431,7 +422,7 @@ while True:
 
 
                     # Load EuropeanWodnerModel.h5 model
-                    model= tensor.keras.models.load_model("EuropeanWonderModel.h5")
+                    model= tensor.keras.models.load_model("CNN_model/highestValAccuracy.h5")
 
                     # Load selected image into correct format for model
                     img = tensor.keras.utils.load_img(imgPath, target_size = (180,180))
@@ -455,11 +446,14 @@ while True:
             # Client for face detection
             face_client = FaceClient(ia_endpoint, CognitiveServicesCredentials(ia_key))
             groupID = 'leaders_group_id'
-            trainFaces(face_client, groupID)
+            # Only needed to run once ever, as this trains the faces and stores it wihin Azure
+            # trainFaces(groupID)
 
             # Select an image from file explorer
             root = tk.Tk()
-            root.filename = filedialog.askopenfilename(initialdir="face_recognition/test_faces/", title="Select An Image Of A European Leader", filetypes=(("JPG files", "*.jpg"),("All Files", "*.*")))
+            root.filename = filedialog.askopenfilename(initialdir="face_recognition/test_faces/", 
+                                                        title="Select An Image Of A European Leader", 
+                                                        filetypes=(("JPG files", "*.jpg"),("All Files", "*.*")))
             root.destroy()
             imgPath = root.filename
 
@@ -492,6 +486,37 @@ while True:
                     print("None of the currently trained European Leader faces are detected in this image.\nCurrently trained leaders: UK, France, Greece, Italy")
             else:
                 print("No image selected.")
+
+        elif cmd == 55:
+            print("Loading model...")
+            detectorLoad("https://tfhub.dev/google/faster_rcnn/openimages_v4/inception_resnet_v2/1")
+
+            # Select an image from file explorer
+            root = tk.Tk()
+            root.filename = filedialog.askopenfilename(initialdir="test_data/MultiObject/", 
+                                                        title="Select An Image", 
+                                                        filetypes=(("JPG files", "*.jpg"),("All Files", "*.*")))
+            root.destroy()
+            imgPath = root.filename
+
+            try:
+                img = tensor.io.read_file(imgPath)
+            except:
+                print("Bye!")
+
+            img = tensor.image.decode_jpeg(img, channels=3)
+
+            converted_img  = tensor.image.convert_image_dtype(img, tensor.float32)[tensor.newaxis, ...]
+
+            result = detector(converted_img)
+
+            try:
+                print("Objects that have been spotted in this image:")
+                for i in range(min(result["detection_boxes"].shape[0], 10)):
+                    if result["detection_scores"][i] >= 0.1:
+                        print("{}: {}%".format(result["detection_class_entities"][i].numpy().decode("utf-8"), int(100 * result["detection_scores"][i])))
+            except:
+                print("No items could be detected.")
 
         elif cmd == 99:
             # Similarity conversation using BoW, tf-idf, and cosine similarity

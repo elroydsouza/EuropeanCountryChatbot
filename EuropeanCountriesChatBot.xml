@@ -402,4 +402,10 @@
 	<template><srai> WHO IS THIS LEADER </srai></template>
 </category>
 
+<!-- Multi Object -->
+<category>
+	<pattern> MULTIOBJECT </pattern>
+	<template>#55$<star/></template>
+</category>
+
 </aiml>
