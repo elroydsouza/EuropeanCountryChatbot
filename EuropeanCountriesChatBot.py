@@ -407,6 +407,7 @@ while True:
                         print("This image is most likely {}. This is said with {:.2f} percent confidence.".format(caption.text, caption.confidence*100))
 
                 elif decision.lower() == "identify":
+                    # Azure custom vision model
                     # Client for custom vision
                     cred = ApiKeyCredentials(in_headers={"Prediction-key": cv_key})
                     custv_client = CustomVisionPredictionClient(endpoint=cv_endpoint, credentials=cred)
@@ -419,10 +420,9 @@ while True:
 
                     print('Azure custom vision identifies this image as', prediction + '.')
 
-
-
+                    # CNN model
                     # Load EuropeanWodnerModel.h5 model
-                    model= tensor.keras.models.load_model("CNN_model/highestValAccuracy.h5")
+                    model= tensor.keras.models.load_model("EuropeanWondersModel.h5")
 
                     # Load selected image into correct format for model
                     img = tensor.keras.utils.load_img(imgPath, target_size = (180,180))
@@ -451,7 +451,7 @@ while True:
 
             # Select an image from file explorer
             root = tk.Tk()
-            root.filename = filedialog.askopenfilename(initialdir="face_recognition/test_faces/", 
+            root.filename = filedialog.askopenfilename(initialdir="test_data/face_test_data/", 
                                                         title="Select An Image Of A European Leader", 
                                                         filetypes=(("JPG files", "*.jpg"),("All Files", "*.*")))
             root.destroy()
@@ -493,8 +493,8 @@ while True:
 
             # Select an image from file explorer
             root = tk.Tk()
-            root.filename = filedialog.askopenfilename(initialdir="test_data/MultiObject/", 
-                                                        title="Select An Image", 
+            root.filename = filedialog.askopenfilename(initialdir="test_data/mo_test_data/", 
+                                                        title="Select An Image With Multiple Objects", 
                                                         filetypes=(("JPG files", "*.jpg"),("All Files", "*.*")))
             root.destroy()
             imgPath = root.filename
