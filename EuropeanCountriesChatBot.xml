@@ -404,8 +404,12 @@
 
 <!-- Multi Object -->
 <category>
-	<pattern> MULTIOBJECT </pattern>
+	<pattern> WHAT OBJECTS ARE IN THIS IMAGE </pattern>
 	<template>#55$<star/></template>
+</category>
+<category>
+	<pattern> MULTIOBJECT </pattern>
+	<template><srai> WHAT OBJECTS ARE IN THIS IMAGE </srai></template>
 </category>
 
 </aiml>
