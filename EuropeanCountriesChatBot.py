@@ -4,15 +4,15 @@
 # Python standard library imports
 import json
 import csv
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # get rid of tensorflow errors
+import tkinter as tk
+from tkinter import filedialog
 # All imports below are published on pypi.org
 # regex 2021.11.10
 import regex
 # Pillow 9.0.0
 from PIL import Image
-from PIL import ImageColor
-from PIL import ImageDraw
-from PIL import ImageFont
-from PIL import ImageOps
 # requests 2.27.1
 import requests
 # aiml 0.9.2
@@ -27,36 +27,21 @@ import simpful as sf
 # nltk 3.6.7
 from nltk.sem import Expression
 from nltk.inference import ResolutionProver
-
-# os
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # get rid of tensorflow errors
-
-# tensorflow
+# tensorflow 2.8.0
 import tensorflow as tensor
-from tensorflow import keras
-# numpy
+# tensorflow-hub 0.12.0
+import tensorflow_hub as hub
+# numpy 1.22.3
 import numpy as np
-
-# tkinter
-import tkinter as tk
-from tkinter import filedialog
-
-# azure computer vision
+# azure cognitive services vision computervision 0.9.0
 from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 from msrest.authentication import CognitiveServicesCredentials
-
-# azure face analysis
+# azure cognitive services vision face 0.6.0
 from azure.cognitiveservices.vision.face import FaceClient
 from msrest.authentication import CognitiveServicesCredentials
-
-# azure custom vision
+# azure cognitive services vision customvision 3.1.0
 from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient
 from msrest.authentication import ApiKeyCredentials
-
-import tensorflow_hub as hub
-
-import matplotlib.pyplot as plt
 
 print("Initialising chatbot...")
 
