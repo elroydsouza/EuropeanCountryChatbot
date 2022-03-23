@@ -1,16 +1,21 @@
-import matplotlib.pyplot as plt
+# Python standard library
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # get rid of tensorflow errors
+# matplotlib 3.5.1
+import matplotlib.pyplot as plt
+# tensorflow 2.8.0
 import tensorflow as tf
-
 from tensorflow import keras
+# keras 2.8.0
 from keras import layers
 from keras.models import Sequential
 
+# declared constants for easy parameter value changes
 batchSize = 32
 IMG_HEIGHT = 180
 IMG_WIDTH = 180
 
+# load images into training dataset with 0.8 training split
 trainData = tf.keras.utils.image_dataset_from_directory(
   "train_data",
   validation_split=0.2,
@@ -19,6 +24,7 @@ trainData = tf.keras.utils.image_dataset_from_directory(
   image_size=(IMG_HEIGHT, IMG_WIDTH),
   batch_size=batchSize)
 
+# load images into validation dataset with 0.2 validation split
 valData = tf.keras.utils.image_dataset_from_directory(
   "train_data",
   validation_split=0.2,
@@ -29,13 +35,14 @@ valData = tf.keras.utils.image_dataset_from_directory(
 
 classNames = trainData.class_names
 
+# save training and validation dataset to cache for faster run times
 AUTOTUNE = tf.data.AUTOTUNE
-
 trainDS = trainData.cache().shuffle(1000).prefetch(buffer_size=AUTOTUNE)
 valDS = valData.cache().prefetch(buffer_size=AUTOTUNE)
 
 numOfClasses = len(classNames)
 
+# augment data for extra data to make models more accurate
 augData = keras.Sequential(
     [
         layers.RandomFlip("horizontal", input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
@@ -44,6 +51,8 @@ augData = keras.Sequential(
     ]
 )
 
+
+# sequential model created with 12 layers (+3 from augmented data)
 model = Sequential([
   augData,
   layers.Rescaling(1./255, input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
@@ -60,12 +69,15 @@ model = Sequential([
   layers.Dense(numOfClasses)
 ])
 
+# model config with losses and metrics
 model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001),
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
+# print summary to view total parameters
 model.summary()
 
+# checkpoint callback to save highest validation accuracy model
 cp = tf.keras.callbacks.ModelCheckpoint(
     "EuropeanWondersModel.h5",
     monitor='val_accuracy',
@@ -73,6 +85,7 @@ cp = tf.keras.callbacks.ModelCheckpoint(
     save_best_only=True,
     verbose=1)
 
+# train the model and store it for graph creation
 graph = model.fit(
   trainDS,
   validation_data=valDS,
@@ -80,14 +93,15 @@ graph = model.fit(
   callbacks=[cp]
 )
 
+# store output values into appropriate variables
 trainAcc = graph.history['accuracy']
 valAcc = graph.history['val_accuracy']
-
 trainLoss = graph.history['loss']
 valLoss = graph.history['val_loss']
 
 epochsRange = range(len(trainAcc))
 
+# plot graph of the model created
 plt.figure(figsize=(8, 8))
 axA=plt.subplot(1, 2, 1)
 axA.plot(epochsRange, trainAcc, label='Training Accuracy', linewidth=2)
