@@ -51,7 +51,6 @@ augData = keras.Sequential(
     ]
 )
 
-
 # sequential model created with 12 layers (+3 from augmented data)
 model = Sequential([
   augData,

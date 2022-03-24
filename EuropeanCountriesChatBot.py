@@ -443,7 +443,7 @@ while True:
             imgPath = root.filename
 
             if(imgPath != ""):
-                # Get the face IDs in a second image
+                # Get the face IDs in the selected image
                 imgStream = open(imgPath, "rb")
                 imgFaces = face_client.face.detect_with_stream(image=imgStream)
                 imgFaceIDs = list(map(lambda face: face.face_id, imgFaces))
@@ -490,9 +490,7 @@ while True:
                 print("Bye!")
 
             img = tensor.image.decode_jpeg(img, channels=3)
-
             converted_img  = tensor.image.convert_image_dtype(img, tensor.float32)[tensor.newaxis, ...]
-
             result = detector(converted_img)
 
             try:
