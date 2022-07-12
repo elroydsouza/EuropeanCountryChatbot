@@ -1,8 +1,7 @@
 # EuropeanCountryChatbot
 My Artificial Intelligence coursework where I received a grade of: 1HIGH
 
-A European Countries chat-bot that utilises rule and similarity based conversation.
-This chatbot also utilised image classification.
+A European Countries chat-bot that utilises rule/similarity-based conversation alongside image classification of European wonders and leaders.
 
 ### The full list of tasks this project aimed to complete are listed below:
 
