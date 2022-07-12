@@ -4,7 +4,7 @@ My Artificial Intelligence coursework where I received a grade of: 1HIGH
 A European Countries chat-bot that utilises rule and similarity based conversation.
 This chatbot also utilised image classification.
 
-###The full list of tasks this project aimed to complete are listed below:
+### The full list of tasks this project aimed to complete are listed below:
 
 ### - Rule/Similarity-based conversations on European Countries
 Implemented rule-based conversation through use of AIML.  
