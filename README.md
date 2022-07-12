@@ -7,9 +7,9 @@ This chatbot also utilised image classification.
 The full list of tasks this project aimed to complete are listed below:
 
 ## Rule/Similarity-based conversations on European Countries
->Implemented rule-based conversation through use of AIML.
->Implemented similarity-based conversation using bag-of-words model, TF-IDF, and cosine similarity.
->Extra functionality: Use of API to answer questions about currency, flags, etc.
+Implemented rule-based conversation through use of AIML.  
+Implemented similarity-based conversation using bag-of-words model, TF-IDF, and cosine similarity.  
+Extra functionality: Use of API to answer questions about currency, flags, etc.
 
 ## First-order and Fuzzy logic on European Countries
 Implemented first order logic with knowledgebase and inference engine using NLTK library.
